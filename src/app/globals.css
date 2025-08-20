@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* From Figma - FAQ Color Palette */
+  --bg-primary: #0f0f0f;      /* Main dark background */
+  --bg-secondary: #1a1a1a;    /* Card background */
+  --bg-hover: #2a2a2a;        /* Card hover state */
+  --accent-green: #4ade80;    /* That bright green */
+  --accent-green-hover: #22c55e;
+  --text-primary: #ffffff;    /* White text */
+  --text-secondary: #a3a3a3;  /* Gray text */
+  --text-muted: #737373;      /* Darker gray */
 }
 
 @theme inline {
