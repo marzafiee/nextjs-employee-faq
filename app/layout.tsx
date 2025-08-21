@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ResponsiveNav from "../components/FAQ Home/Navbar/ResponsiveNav";
 
 const font=Inter({
   weight: ['400', '500', '600', '700', '800'],
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${font.className} antialiased`}
       >
+        <ResponsiveNav />
         {children}
       </body>
     </html>
