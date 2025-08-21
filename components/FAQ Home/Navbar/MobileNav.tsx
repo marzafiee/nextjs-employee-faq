@@ -1,10 +1,8 @@
-// this is for the mobile navigation bar
+// this is for the mobile navigation bar if necessary
 import React from 'react'
 
 const MobileNav = () => {
-  return (
-    <div>MobileNav</div>
-  )
+  return
 }
 
 export default MobileNav;
