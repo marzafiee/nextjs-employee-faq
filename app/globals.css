@@ -13,4 +13,11 @@
   --text-muted: #737373;      /* Darker gray */
 }
 
+@layer base {
+  body {
+    @apply bg-[#1A1A1A];
+  }
+}
+
+
 
