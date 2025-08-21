@@ -1,9 +1,12 @@
 import React from 'react'
+import FAQ from '../components/FAQ Home/FAQ';
 
-const HomePage = () => {
+const FAQPage = () => {
   return (
-    <div className="text-5xl text-cyan-500">HomePage</div>
-  )
-}
+    <div>
+      <FAQ />
+    </div>
+  );
+};
 
-export default HomePage
+export default FAQPage
