@@ -2,6 +2,7 @@
 import React from 'react';
 import Hero from "./Hero/Hero";
 import FilterSlider from './Filter Slider/FilterSlider';
+import FAQCard from './Grid-Contents/FAQCard'
 
 const FAQ = () => {
   return (
@@ -11,6 +12,9 @@ const FAQ = () => {
       </div>
       <div className='px-0' style={{marginTop: '0px'}}>
         <FilterSlider />
+      </div>
+      <div>
+        <FAQCard />
       </div>
     </div>
   );
