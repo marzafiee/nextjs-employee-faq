@@ -14,10 +14,10 @@
 
   /* Filter Bar Button colors */
   /* the default filter button looks like this */
-  --btn-border-default: #bdff00;
-  --btn-fill-default: #ecffb7;
+  --btn-border-default:rgba(189, 255, 0, 0.5);
+  --btn-fill-default:rgba(236, 255, 183, 0.65);
   --btn-text-default: #ffffff;
-
+  
   /* when the button is selected */
   --btn-bg-active: #ffffff;
   --btn-text-active: #000000;
