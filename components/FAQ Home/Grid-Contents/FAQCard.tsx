@@ -1,8 +1,9 @@
 "use client"
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react'; // these are for the up and down toggle arrows per card
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import FilterSlider from './../filter-slider/FilterSlider';
 
-// an interface for the cards' contents
+// Interface for the FAQ cards' contents
 interface FAQItem {
   id: number;
   question: string;
@@ -10,7 +11,7 @@ interface FAQItem {
   category: string;
 }
 
-// storing the actual questions and answers in an array like a dictionary
+// Storing the actual questions and answers in an array
 const faqData: FAQItem[] = [
   {
     id: 1,
@@ -50,8 +51,6 @@ const faqData: FAQItem[] = [
   }
 ];
 
-const categories = ["All", "Basic Requirements", "Common Scenarios", "Potential Issues"];
-
 const getCategoryColor = (category: string) => {
   switch (category) {
     case "Basic Requirements":
@@ -65,27 +64,29 @@ const getCategoryColor = (category: string) => {
   }
 };
 
-// adding a constant glow effect to the toggle buttons
-const getCategoryGlowColor = (category: string) => {
-  switch (category) {
-    case "Basic Requirements":
-      return "shadow-[0_0_20px_rgba(232,255,165,0.5)] ring-2 ring-[#E8FFA5]/30";
-    case "Common Scenarios":
-      return "shadow-[0_0_20px_rgba(255,255,255,0.3)] ring-2 ring-white/20";
-    case "Potential Issues":
-      return "shadow-[0_0_20px_rgba(176,229,25,0.5)] ring-2 ring-[#B0E519]/30";
-    default:
-      return "shadow-[0_0_20px_rgba(255,255,255,0.3)] ring-2 ring-white/20";
+// Function to shuffle array randomly
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
+  return shuffled;
 };
 
 const FAQComponent: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
+  const [shuffledFAQs, setShuffledFAQs] = useState<FAQItem[]>([]);
 
-  const filteredFAQs = activeFilter === "All" 
-    ? faqData 
-    : faqData.filter(faq => faq.category === activeFilter);
+  // Filter and shuffle FAQs
+  useEffect(() => {
+    const filtered = activeFilter === "All" 
+      ? faqData 
+      : faqData.filter(faq => faq.category === activeFilter);
+    
+    setShuffledFAQs(shuffleArray(filtered));
+  }, [activeFilter]);
 
   const toggleExpanded = (id: number) => {
     const newExpandedItems = new Set(expandedItems);
@@ -98,129 +99,123 @@ const FAQComponent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-6">Employee Attendance FAQ</h1>
-          
-          {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveFilter(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  activeFilter === category
-                    ? `${getCategoryColor(category)} ${getCategoryGlowColor(category)}`
-                    : "bg-gray-700 text-white hover:bg-gray-600"
-                }`}
-              >
-                {category}
-              </button>
+    <div>
+      {/* Use the imported FilterSlider component */}
+      <FilterSlider 
+        activeFilter={activeFilter} 
+        onFilterChange={setActiveFilter} 
+      />
+
+      {/* Reduced spacing here - changed from pt-8 to pt-2 */}
+      <div className="p-4 pt-2">
+        <div className="max-w-6xl mx-auto">
+          {/* FAQ Items - Mobile Layout */}
+          <div className="lg:hidden space-y-4">
+            {shuffledFAQs.map((faq) => (
+              <div key={faq.id} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[20px] overflow-hidden shadow-lg">
+                {/* Category Tag */}
+                <div className="p-4 pb-2">
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
+                    {faq.category}
+                  </span>
+                </div>
+                
+                {/* Question - Updated font sizes: text-[13px] for mobile, sm:text-[14px] for small screens, md:text-[15px] for medium+ */}
+                <button
+                  onClick={() => toggleExpanded(faq.id)}
+                  className="w-full text-left px-4 pb-4 hover:bg-black/10 transition-colors duration-200"
+                >
+                  <div className="flex justify-between items-start gap-4">
+                    <h3 className="font-medium leading-tight pr-2 text-white text-[13px] sm:text-[14px] md:text-[15px]">
+                      {faq.question}
+                    </h3>
+                    <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center">
+                      {expandedItems.has(faq.id) ? (
+                        <ChevronUp className="w-4 h-4 text-black" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-black" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+                
+                {/* Divider Line with gradient */}
+                {expandedItems.has(faq.id) && (
+                  <div className="px-4">
+                    <div className="h-px bg-gradient-to-r from-[#BDFF00] via-[#BDFF00] to-[#59FF00] w-full"></div>
+                  </div>
+                )}
+                
+                {/* Answer - Updated font sizes: text-[11px] for mobile, sm:text-[12px] for small screens, md:text-[13px] for medium+ */}
+                {expandedItems.has(faq.id) && (
+                  <div className="px-4 py-4 w-full">
+                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[11px] sm:text-[12px] md:text-[13px]">
+                      {faq.answer}
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
-        </div>
 
-        {/* FAQ Items - Mobile Layout */}
-        <div className="lg:hidden space-y-4">
-          {filteredFAQs.map((faq) => (
-            <div key={faq.id} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[20px] overflow-hidden shadow-lg">
-              {/* Category Tag */}
-              <div className="p-4 pb-2">
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
-                  {faq.category}
-                </span>
+          {/* FAQ Items - Desktop Grid Layout */}
+          <div className="hidden lg:grid lg:grid-cols-2 gap-6">
+            {shuffledFAQs.map((faq) => (
+              <div key={faq.id} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[20px] overflow-hidden h-fit shadow-lg">
+                {/* Category Tag */}
+                <div className="p-4 pb-2">
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
+                    {faq.category}
+                  </span>
+                </div>
+                
+                {/* Question - Desktop font sizes: text-[13px] for base, xl:text-[14px] for extra large */}
+                <button
+                  onClick={() => toggleExpanded(faq.id)}
+                  className="w-full text-left px-4 pb-4 hover:bg-black/10 transition-colors duration-200"
+                >
+                  <div className="flex justify-between items-start gap-4">
+                    <h3 className="font-medium leading-tight pr-2 text-white text-[13px] xl:text-[14px]">
+                      {faq.question}
+                    </h3>
+                    <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center">
+                      {expandedItems.has(faq.id) ? (
+                        <ChevronUp className="w-4 h-4 text-black" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-black" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+                
+                {/* Divider Line with gradient */}
+                {expandedItems.has(faq.id) && (
+                  <div className="px-4">
+                    <div className="h-px bg-gradient-to-r from-[#BDFF00] via-[#BDFF00] to-[#59FF00] w-full"></div>
+                  </div>
+                )}
+                
+                {/* Answer - Desktop font sizes: text-[11px] for base, xl:text-[12px] for extra large */}
+                {expandedItems.has(faq.id) && (
+                  <div className="px-4 py-4 w-full">
+                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[11px] xl:text-[12px]">
+                      {faq.answer}
+                    </div>
+                  </div>
+                )}
               </div>
-              
-              {/* Question */}
-              <button
-                onClick={() => toggleExpanded(faq.id)}
-                className="w-full text-left px-4 pb-4 hover:bg-black/10 transition-colors duration-200"
-              >
-                <div className="flex justify-between items-start gap-4">
-                  <h3 className="text-lg font-medium leading-tight pr-2">
-                    {faq.question}
-                  </h3>
-                  <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center">
-                    {expandedItems.has(faq.id) ? (
-                      <ChevronUp className="w-4 h-4 text-black" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-black" />
-                    )}
-                  </div>
-                </div>
-              </button>
-              
-              {/* the divider Line with radial gradient */}
-              {expandedItems.has(faq.id) && (
-                <div className="px-4">
-                  <div className="h-px bg-gradient-to-r from-[#BDFF00] via-[#BDFF00] to-[#59FF00] w-full"></div>
-                </div>
-              )}
-              
-              {/* Answer */}
-              {expandedItems.has(faq.id) && (
-                <div className="px-4 py-4 w-full">
-                  <div className="text-[#E5E5E5] leading-relaxed w-full">
-                    {faq.answer}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* FAQ Items - Desktop Grid Layout */}
-        <div className="hidden lg:grid lg:grid-cols-2 gap-6">
-          {filteredFAQs.map((faq) => (
-            <div key={faq.id} className="bg-gray-800 rounded-lg overflow-hidden h-fit">
-              {/* Category Tag */}
-              <div className="p-4 pb-2">
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
-                  {faq.category}
-                </span>
-              </div>
-              
-              {/* Question */}
-              <button
-                onClick={() => toggleExpanded(faq.id)}
-                className="w-full text-left p-4 pt-2 hover:bg-gray-750 transition-colors duration-200"
-              >
-                <div className="flex justify-between items-start gap-4">
-                  <h3 className="text-lg font-medium leading-tight pr-2">
-                    {faq.question}
-                  </h3>
-                  <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center">
-                    {expandedItems.has(faq.id) ? (
-                      <ChevronUp className="w-4 h-4 text-black" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-black" />
-                    )}
-                  </div>
-                </div>
-              </button>
-              
-              {/* Answer */}
-              {expandedItems.has(faq.id) && (
-                <div className="px-4 pb-4">
-                  <div className="text-gray-300 leading-relaxed">
-                    {faq.answer}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredFAQs.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-lg">
-              No FAQ items found for the selected category.
-            </div>
+            ))}
           </div>
-        )}
+
+          {/* Empty State */}
+          {shuffledFAQs.length === 0 && (
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-lg">
+                No FAQ items found for the selected category.
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
