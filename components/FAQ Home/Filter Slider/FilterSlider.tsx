@@ -1,9 +1,12 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const FilterSlider = () => {
     // initially, as shown in the Figma, we have 'All' set as the default selected filter
     const [activeFilter, setActiveFilter] = useState('All')
+    
+    // state for responsive positioning (client-side only)
+    const [topPosition, setTopPosition] = useState('-60px') // safe default for mobile
     
     // but in the meantime, these are all the buttons we would have in the slider
     const filters = [
@@ -12,41 +15,62 @@ const FilterSlider = () => {
         'Common Scenarios',
         'Potential Issues'
     ]
+
+    // function to handle dynamic button styles based on active state
+    const getButtonStyles = (isActive: boolean) => ({
+        backgroundColor: isActive ? 'var(--btn-bg-active)' : 'var(--btn-fill-default)',
+        color: isActive ? 'var(--btn-text-active)' : 'var(--btn-text-default)'
+    })
+
+    // function to get responsive border classes
+    const getBorderClasses = (isActive: boolean) => {
+        const borderColor = isActive ? 'border-[var(--btn-bg-active)]' : 'border-[var(--btn-border-default)]'
+        return `border md:border-3 ${borderColor}`
+    }
+
+    // function to get responsive positioning (client-side only)
+    const getResponsivePosition = () => {
+        if (window.innerWidth >= 1024) return '-200px' // large screens
+        if (window.innerWidth >= 768) return '-120px'  // medium screens
+        return '-60px' // small screens
+    }
+
+    // useEffect to set positioning after component mounts (client-side only)
+    useEffect(() => {
+        const updatePosition = () => {
+            setTopPosition(getResponsivePosition())
+        }
+
+        // Set initial position
+        updatePosition()
+
+        // Optional: Update position on window resize
+        window.addEventListener('resize', updatePosition)
+        
+        // Cleanup
+        return () => window.removeEventListener('resize', updatePosition)
+    }, [])
     
     return (
-        <div className='flex justify-center w-full'>
-            <div className='flex gap-2 sm:gap-[10px] p-2 sm:p-4 bg-[var(--bg-secondary)] rounded-lg overflow-x-auto max-w-fit'>
-            {/*Now we loop through EACH filter option with the map function and create a button for each filter in our array */}
-            {filters.map((filter) => (
-                <button
-                    key={filter}
-                    // when the button is clicked, we'd update the active filter's state so:
-                    onClick={() => setActiveFilter(filter)}
-                    className={`px-4 sm:px-8 md:px-16 lg:px-[100px] py-2 rounded-[45px] font-medium transition-colors duration-200 whitespace-nowrap text-sm sm:text-base flex-shrink-0 ${
-                        // if this button is the active one, apply the active styling
-                        activeFilter === filter
-                            ? 'text-[var(--btn-text-active)]'
-                            // and if not active, apply default styling
-                            : 'text-[var(--btn-text-default)] hover:opacity-80'
-                    }`}
-                    //now we have inline styles using CSS custom properties
-                    style={{
-                        // Default state styling using CSS variables
-                        backgroundColor: activeFilter === filter 
-                            ? 'var(--btn-bg-active)' 
-                            : 'rgba(236, 255, 183, 0.65)', // Using your --btn-fill-default with opacity
-                        border: '1px solid var(--btn-border-default)',
-                        borderColor: activeFilter === filter 
-                            ? 'var(--btn-bg-active)' 
-                            : 'rgba(189, 255, 0, 0.5)', // Using your --btn-border-default with opacity
-                        boxSizing: 'border-box', // ensures border is positioned inside
-                    }}
-                > 
-                    {/* display the name of the filter as button text */}
-                    {filter}
-                </button>
-            ))}
-        </div>
+        <div className='flex justify-center w-full px-2 relative' style={{ top: topPosition }}>
+            <div className='flex flex-wrap gap-1.5 sm:gap-2 md:gap-3 p-2 sm:p-3 md:p-4 rounded-lg max-w-full'>
+                {/*Now we loop through EACH filter option with the map function and create a button for each filter in our array */}
+                {filters.map((filter) => (
+                    <button
+                        key={filter}
+                        // when the button is clicked, we'd update the active filter's state so:
+                        onClick={() => setActiveFilter(filter)}
+                        className={`px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 rounded-full font-medium transition-colors duration-200 whitespace-nowrap text-xs sm:text-sm md:text-base leading-tight flex-shrink-0 min-w-0 ${getBorderClasses(activeFilter === filter)}`}
+                        // use the dynamic styling function
+                        style={getButtonStyles(activeFilter === filter)}
+                    > 
+                        {/* display the name of the filter as button text */}
+                        <span className="block truncate max-w-full">
+                            {filter}
+                        </span>
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };

@@ -6,8 +6,10 @@ import FilterSlider from './Filter Slider/FilterSlider';
 const FAQ = () => {
   return (
     <div className="overflow-hidden">
-      <Hero />
-      <div className='px-4 py-6'>
+      <div>
+        <Hero />
+      </div>
+      <div className='px-0' style={{marginTop: '0px'}}>
         <FilterSlider />
       </div>
     </div>

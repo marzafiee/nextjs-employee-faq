@@ -1,20 +1,19 @@
-"use client"
 import React from 'react';
 
 const Hero = () => {
   return (
-    <div
-      className="relative w-full h-[60vh] sm:h-screen bg-[#1A1A1A] flex flex-col justify-center items-center text-center px-4"
-      style={{
-        backgroundImage: `linear-gradient(
-          to bottom, 
-          rgba(189, 255, 0, 0.62) 0%, 
-          rgba(122, 150, 3, 0.8) 30%, 
-          rgba(26, 26, 26, 1) 85%
-        )`,
-        marginBottom: '0px',
-        marginTop: '40px'
-      }}
+  <div
+    className="relative w-full h-[60vh] sm:h-screen flex flex-col justify-center items-center text-center px-4 
+              mt-[40px] lg:mt-[-35px]"
+    style={{
+      backgroundImage: `linear-gradient(
+        to bottom, 
+        rgba(189, 255, 0, 0.62) 0%, 
+        rgba(122, 150, 3, 0.8) 30%, 
+        rgba(26, 26, 26, 1) 85%
+      )`,
+      marginBottom: '0px',
+    }}
     >
       <h1 className="text-white text-4xl sm:text-5xl font-extrabold mb-6 max-w-4xl">
         &lt;/Frequently Asked Questions (FAQ)_ 
