@@ -1,3 +1,4 @@
+<div align="center">
 # Employee Attendance FAQ Page
 
 <div align="center">
