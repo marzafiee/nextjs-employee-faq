@@ -9,16 +9,6 @@ const font=Inter({
   subsets: ["latin"]
 })
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
 export const metadata: Metadata = {
   title: "Employee Attendance FAQ Page",
   description: "Generated using Next.js 15, Tailwind CSS and TypeScript",
