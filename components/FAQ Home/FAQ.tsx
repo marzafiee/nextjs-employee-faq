@@ -2,7 +2,7 @@
 import React from 'react';
 import Hero from "./Hero/Hero";
 // import FilterSlider from './filter-slider/FilterSlider';
-import FAQCard from './Grid-Contents/FAQCard'
+import FAQCard from './Grid-Contents/CardComponent'
 
 const FAQ = () => {
   return (
