@@ -1,9 +1,8 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import FilterSlider from './../filter-slider/FilterSlider';
+"use client";
+import React, { useState, useEffect } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import FilterSlider from "./../filter-slider/FilterSlider";
 
-// Interface for the FAQ cards' contents
 interface FAQItem {
   id: number;
   question: string;
@@ -11,7 +10,6 @@ interface FAQItem {
   category: string;
 }
 
-// Storing the actual questions and answers in an array
 const faqData: FAQItem[] = [
   {
     id: 1,
@@ -64,7 +62,6 @@ const getCategoryColor = (category: string) => {
   }
 };
 
-// Function to shuffle array randomly because I didn't liked how they were already ordered according to category
 const shuffleArray = <T,>(array: T[]): T[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -74,73 +71,58 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return shuffled;
 };
 
-const FAQComponent: React.FC = () => {
+const CardComponent: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
   const [shuffledFAQs, setShuffledFAQs] = useState<FAQItem[]>([]);
 
-  // Filter and shuffle FAQs --the logic
   useEffect(() => {
-    const filtered = activeFilter === "All" 
-      ? faqData 
-      : faqData.filter(faq => faq.category === activeFilter);
-    
+    const filtered =
+      activeFilter === "All"
+        ? faqData
+        : faqData.filter((faq) => faq.category === activeFilter);
+
     setShuffledFAQs(shuffleArray(filtered));
   }, [activeFilter]);
 
   const toggleExpanded = (id: number) => {
     const newExpandedItems = new Set(expandedItems);
-    if (newExpandedItems.has(id)) {
-      newExpandedItems.delete(id);
-    } else {
-      newExpandedItems.add(id);
-    }
+    newExpandedItems.has(id) ? newExpandedItems.delete(id) : newExpandedItems.add(id);
     setExpandedItems(newExpandedItems);
   };
 
   return (
     <div>
-      {/* Use the imported FilterSlider component */}
-      <FilterSlider 
-        activeFilter={activeFilter} 
-        onFilterChange={setActiveFilter} 
-      />
-
-      {/* Reduced spacing here - changed from pt-8 to pt-2 */}
-      <div className="p-4 pt-2">
+      <FilterSlider activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+      <div className="p-8 pt-0 -mt-5"> {/*this padding affects the borders of the card grid*/}
         <div className="max-w-6xl mx-auto">
-          {/* FAQ Items - Mobile Layout */}
-          <div className="lg:hidden space-y-4">
+          {/* Mobile View - FAQ Items */}
+          <div className="lg:hidden space-y-3">
+            {/*Shuffling cards anytime the user clicks on All just because*/}
             {shuffledFAQs.map((faq) => (
-              // this is for the colour of the cards
-              <div key={faq.id} 
-              className="rounded-[30px] overflow-hidden shadow-lg" 
-              style={{
-                background: `linear-gradient(
-                  to right,
-                  rgba(189, 255, 0, 0.2) -170%,
-                  rgba(49, 49, 49, 0.3) 70%
-                )`
-              }}>
-                {/* Category Tag */}
+              <div
+                key={faq.id}
+                className="rounded-[30px] overflow-hidden shadow-lg"
+                style={{
+                  background: `linear-gradient(to right, rgba(189, 255, 0, 0.2) -170%, rgba(49, 49, 49, 0.3) 70%)`
+                }}
+              >
+                {/*Category frame*/}
                 <div className="p-4 pb-2">
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
                     {faq.category}
                   </span>
                 </div>
-                
-                {/* Question - Updated font sizes: text-[13px] for mobile, sm:text-[14px] for small screens, md:text-[15px] for medium+ */}
+                {/*What happens when the state is the Card is Open/closed*/}
                 <button
                   onClick={() => toggleExpanded(faq.id)}
-                  className="w-full text-left px-4 pb-4 transition-colors duration-200  hover:bg-black/10"
+                  className="w-full text-left px-4 pb-4 transition-colors duration-200 hover:bg-black/10"
                 >
                   <div className="flex justify-between items-start gap-y-3">
                     <h3 className="font-medium leading-tight pr-2 text-white text-[15px] sm:text-[16px] md:text-[17px]">
                       {faq.question}
                     </h3>
-                    {/* styling for the toggle arrow */}
-                    <div className="
-                    flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center shadow-[0_3px_6px_rgba(189,255,0,0.5)]">
+                    <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center shadow-[0_3px_6px_rgba(189,255,0,0.5)]">
                       {expandedItems.has(faq.id) ? (
                         <ChevronUp className="w-4 h-4 text-black" />
                       ) : (
@@ -148,49 +130,39 @@ const FAQComponent: React.FC = () => {
                       )}
                     </div>
                   </div>
-                </button>  
-                {/* divider Line with linear gradient */}
+                </button>
+                {/*Answer - when state is open*/}
                 {expandedItems.has(faq.id) && (
-                  <div className="px-4">
-                    <div
-                      className="h-px w-full opacity-80"
-                      style={{
-                        background: `linear-gradient(to right, #BDFF00 33%, rgba(255, 255, 255, 0.59) 100%)`
-                      }}
-                    />
-                  </div>
-                )}                
-                {/* Answer */}
-                {expandedItems.has(faq.id) && (
-                  <div className="px-4 py-4 w-full">
-                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[13px] sm:text-[14px] md:text-[15px]">
+                  <>
+                    <div className="px-4">
+                      <div className="h-px w-full opacity-80" style={{ background: `linear-gradient(to right, #BDFF00 33%, rgba(255, 255, 255, 0.59) 100%)` }} />
+                    </div>
+                    <div className="px-4 py-4 text-[#E5E5E5] text-[13px] sm:text-[14px] md:text-[15px]">
                       {faq.answer}
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             ))}
           </div>
 
-          {/* FAQ Items - for the Desktop 2 column grid layout */}
-          <div className="hidden lg:grid lg:grid-cols-2 gap-3">
+          {/* Desktop View */}
+          <div className="hidden lg:grid lg:grid-cols-2 gap-3 px-5 pt-0 -mt-40 relative z-10">
             {shuffledFAQs.map((faq) => (
-              <div key={faq.id} className='rounded-[30px] overflow-hidden h-fit'
-              style={{
-                background: `linear-gradient(
-                  to right,
-                  rgba(189, 255, 0, 0.2) -170%,
-                  rgba(49, 49, 49, 0.3) 70%
-                )`
-              }}>
-                {/* Category Tag */}
+              <div
+                key={faq.id}
+                className="rounded-[30px] overflow-hidden h-fit"
+                style={{
+                  background: `linear-gradient(to right, rgba(189, 255, 0, 0.2) -170%, rgba(49, 49, 49, 0.3) 70%)`
+                }}
+              >
                 <div className="p-4 pb-2">
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
                     {faq.category}
                   </span>
                 </div>
-                
-                {/* Question*/}
+
+                {/*Questions*/}
                 <button
                   onClick={() => toggleExpanded(faq.id)}
                   className="w-full text-left px-4 pb-4 hover:bg-black/10 transition-colors duration-200"
@@ -208,38 +180,25 @@ const FAQComponent: React.FC = () => {
                     </div>
                   </div>
                 </button>
-                
-                {/* Divider Line with gradient */}
+
+                {/*divider line with linear gradient and Answer*/}
                 {expandedItems.has(faq.id) && (
-                  <div className="px-4">
-                    <div className="h-px bg-gradient-to-r from-[#BDFF00] via-[#BDFF00] to-[#59FF00] w-full"></div>
-                  </div>
-                )}
-                
-                {/* Answer - for the desktop */}
-                {expandedItems.has(faq.id) && (
-                  <div className="px-4 py-4 w-full">
-                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[14px] xl:text-[19px]">
+                  <>
+                    <div className="px-4">
+                      <div className="h-px bg-gradient-to-r from-[#BDFF00] via-white/60 to-white/10 opacity-80" />
+                    </div>
+                    <div className="px-4 py-4 text-[#E5E5E5] leading-relaxed w-full text-[15px] xl:text-[16px]">
                       {faq.answer}
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             ))}
           </div>
-
-          {/* Empty State */}
-          {shuffledFAQs.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-lg">
-                No FAQ items found for the selected category.
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default FAQComponent;
+export default CardComponent;
