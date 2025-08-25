@@ -57,15 +57,13 @@ const FilterSlider: React.FC<FilterSliderProps> = ({
         // Set initial position
         updatePosition()
 
-        // Optional: Update position on window resize
+        // update position on window resize
         window.addEventListener('resize', updatePosition)
-        
-        // Cleanup
         return () => window.removeEventListener('resize', updatePosition)
     }, [])
     
     return (
-        <div className='flex justify-center w-full px-2 relative' style={{ top: topPosition }}>
+        <div className='flex justify-center w-full px-2 relative pb-[0]' style={{ top: topPosition }}>
             <div className='flex flex-wrap gap-1.5 sm:gap-2 md:gap-3 p-2 sm:p-3 md:p-4 rounded-lg max-w-full'>
                 {/*Now we loop through EACH filter option with the map function and create a button for each filter in our array */}
                 {filters.map((filter) => (
