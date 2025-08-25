@@ -64,7 +64,7 @@ const getCategoryColor = (category: string) => {
   }
 };
 
-// Function to shuffle array randomly
+// Function to shuffle array randomly because I didn't liked how they were already ordered according to category
 const shuffleArray = <T,>(array: T[]): T[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -79,7 +79,7 @@ const FAQComponent: React.FC = () => {
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
   const [shuffledFAQs, setShuffledFAQs] = useState<FAQItem[]>([]);
 
-  // Filter and shuffle FAQs
+  // Filter and shuffle FAQs --the logic
   useEffect(() => {
     const filtered = activeFilter === "All" 
       ? faqData 
@@ -112,7 +112,16 @@ const FAQComponent: React.FC = () => {
           {/* FAQ Items - Mobile Layout */}
           <div className="lg:hidden space-y-4">
             {shuffledFAQs.map((faq) => (
-              <div key={faq.id} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[20px] overflow-hidden shadow-lg">
+              // this is for the colour of the cards
+              <div key={faq.id} 
+              className="rounded-[30px] overflow-hidden shadow-lg" 
+              style={{
+                background: `linear-gradient(
+                  to right,
+                  rgba(189, 255, 0, 0.2) -170%,
+                  rgba(49, 49, 49, 0.3) 70%
+                )`
+              }}>
                 {/* Category Tag */}
                 <div className="p-4 pb-2">
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
@@ -123,13 +132,15 @@ const FAQComponent: React.FC = () => {
                 {/* Question - Updated font sizes: text-[13px] for mobile, sm:text-[14px] for small screens, md:text-[15px] for medium+ */}
                 <button
                   onClick={() => toggleExpanded(faq.id)}
-                  className="w-full text-left px-4 pb-4 hover:bg-black/10 transition-colors duration-200"
+                  className="w-full text-left px-4 pb-4 transition-colors duration-200  hover:bg-black/10"
                 >
-                  <div className="flex justify-between items-start gap-4">
-                    <h3 className="font-medium leading-tight pr-2 text-white text-[13px] sm:text-[14px] md:text-[15px]">
+                  <div className="flex justify-between items-start gap-y-3">
+                    <h3 className="font-medium leading-tight pr-2 text-white text-[15px] sm:text-[16px] md:text-[17px]">
                       {faq.question}
                     </h3>
-                    <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center">
+                    {/* styling for the toggle arrow */}
+                    <div className="
+                    flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center shadow-[0_3px_6px_rgba(189,255,0,0.5)]">
                       {expandedItems.has(faq.id) ? (
                         <ChevronUp className="w-4 h-4 text-black" />
                       ) : (
@@ -137,19 +148,22 @@ const FAQComponent: React.FC = () => {
                       )}
                     </div>
                   </div>
-                </button>
-                
-                {/* Divider Line with gradient */}
+                </button>  
+                {/* divider Line with linear gradient */}
                 {expandedItems.has(faq.id) && (
                   <div className="px-4">
-                    <div className="h-px bg-gradient-to-r from-[#BDFF00] via-[#BDFF00] to-[#59FF00] w-full"></div>
+                    <div
+                      className="h-px w-full opacity-80"
+                      style={{
+                        background: `linear-gradient(to right, #BDFF00 33%, rgba(255, 255, 255, 0.59) 100%)`
+                      }}
+                    />
                   </div>
-                )}
-                
-                {/* Answer - Updated font sizes: text-[11px] for mobile, sm:text-[12px] for small screens, md:text-[13px] for medium+ */}
+                )}                
+                {/* Answer */}
                 {expandedItems.has(faq.id) && (
                   <div className="px-4 py-4 w-full">
-                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[11px] sm:text-[12px] md:text-[13px]">
+                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[13px] sm:text-[14px] md:text-[15px]">
                       {faq.answer}
                     </div>
                   </div>
@@ -158,10 +172,17 @@ const FAQComponent: React.FC = () => {
             ))}
           </div>
 
-          {/* FAQ Items - Desktop Grid Layout */}
-          <div className="hidden lg:grid lg:grid-cols-2 gap-6">
+          {/* FAQ Items - for the Desktop 2 column grid layout */}
+          <div className="hidden lg:grid lg:grid-cols-2 gap-3">
             {shuffledFAQs.map((faq) => (
-              <div key={faq.id} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[20px] overflow-hidden h-fit shadow-lg">
+              <div key={faq.id} className='rounded-[30px] overflow-hidden h-fit'
+              style={{
+                background: `linear-gradient(
+                  to right,
+                  rgba(189, 255, 0, 0.2) -170%,
+                  rgba(49, 49, 49, 0.3) 70%
+                )`
+              }}>
                 {/* Category Tag */}
                 <div className="p-4 pb-2">
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(faq.category)}`}>
@@ -169,16 +190,16 @@ const FAQComponent: React.FC = () => {
                   </span>
                 </div>
                 
-                {/* Question - Desktop font sizes: text-[13px] for base, xl:text-[14px] for extra large */}
+                {/* Question*/}
                 <button
                   onClick={() => toggleExpanded(faq.id)}
                   className="w-full text-left px-4 pb-4 hover:bg-black/10 transition-colors duration-200"
                 >
                   <div className="flex justify-between items-start gap-4">
-                    <h3 className="font-medium leading-tight pr-2 text-white text-[13px] xl:text-[14px]">
+                    <h3 className="font-medium leading-tight pr-2 text-white text-[16px] xl:text-[18px]">
                       {faq.question}
                     </h3>
-                    <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center">
+                    <div className="flex-shrink-0 w-8 h-8 bg-lime-400 rounded-full flex items-center justify-center shadow-[0_3px_6px_rgba(189,255,0,0.5)]">
                       {expandedItems.has(faq.id) ? (
                         <ChevronUp className="w-4 h-4 text-black" />
                       ) : (
@@ -195,10 +216,10 @@ const FAQComponent: React.FC = () => {
                   </div>
                 )}
                 
-                {/* Answer - Desktop font sizes: text-[11px] for base, xl:text-[12px] for extra large */}
+                {/* Answer - for the desktop */}
                 {expandedItems.has(faq.id) && (
                   <div className="px-4 py-4 w-full">
-                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[11px] xl:text-[12px]">
+                    <div className="text-[#E5E5E5] leading-relaxed w-full text-[14px] xl:text-[19px]">
                       {faq.answer}
                     </div>
                   </div>
