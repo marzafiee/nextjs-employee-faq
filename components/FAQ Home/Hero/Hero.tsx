@@ -3,7 +3,7 @@ import React from 'react';
 const Hero = () => {
   return (
   <div
-    className="relative w-full h-[60vh] sm:h-screen flex flex-col justify-center items-center text-center px-4 
+    className="relative z-0 w-full h-[60vh] sm:h-screen flex flex-col justify-center items-center text-center px-4 
               mt-[40px] lg:mt-[-35px]"
     style={{
       backgroundImage: `linear-gradient(
