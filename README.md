@@ -1,5 +1,6 @@
 <div align="center">
-# Employee Attendance FAQ Page
+    <h1>Employee Attendance FAQ Page</h1>
+</div> 
 
 <div align="center">
 
@@ -150,7 +151,3 @@ Contributions are welcome! Here's how you can help:
 4. Commit your changes (`git commit -m 'Add amazing feature'`)
 5. Push to your branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
